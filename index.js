@@ -1,27 +1,29 @@
-const http = require("http");
+const express = require("express");
+
+const app = express();
 
 const port = 3000;
 
-const server = http.createServer((req, res) => {
-  res.writeHead(200, {
-    "Content-Type": "text/html; charset=utf-8",
-  });
+const products = [
+  { id: 1, name: "Product 1", brand: "Brand A" },
+  { id: 2, name: "Product 2", brand: "Brand B" },
+  { id: 3, name: "Product 3", brand: "Brand A" },
+];
 
-  const url = req.url;
-
-  if (url === "/about") {
-    res.write("<h1>About us page</h1>");
-    res.end();
-  } else if (url === "/contact") {
-    res.write("<h1>Contact us page</h1>");
-    res.end();
-  } else {
-    res.write("<h1>Hello World!</h1>");
-    res.write("<h2>My name is Vladyslav</h2>");
-    res.end();
-  }
+app.get("/", (request, response) => {
+  response.send("response for GET request");
 });
 
-server.listen(port, () => {
+app.get("/products/:brand", (req, res) => {
+  const { brand } = req.params;
+
+  const filteredProducts = products.filter(
+    (product) => product.brand === brand,
+  );
+
+  res.json(filteredProducts);
+});
+
+app.listen(port, () => {
   console.log(`Server started at http://localhost:${port}/`);
 });
